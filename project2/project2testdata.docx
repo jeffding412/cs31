@@ -1,0 +1,155 @@
+For Project 2, you not only had to compute the right fare for a variety of cases, but you had to report errors correctly. The amount of the fare should agree with what the fare calculator computes.
+
+Most people whose correctness score is below 45 made one or more of these silly mistakes:
+
+Not always writing a line of three hyphens (even before error messages)
+Not always writing exactly one line after the line of three hyphens
+Starting an output line with a space
+Misspelling words (or wrong, missing, or extra words)
+Miscapitalizing words
+Missing space between words
+Extra space after the dollar sign
+Missing dollar sign
+Missing or extra digits in the output
+Period at the end of the messages
+(Some people who scored 45 or above also made some of these mistakes, especially forgetting the line of three hyphens before error messages.)
+
+Making mistakes like these is inexcusable — we told you to be careful if you were a bad speller or typist, or if English was not your first language. We provided a tester that checked for some of these mistakes. We even listed in the spec mistakes to watch out for. Despite all that, some people chose to ignore all that guidance and made the mistakes anyway.
+
+Here are the 27 test cases; cases 1 through 7 were worth 2 points each, case 8 was worth 4 points, and the rest were worth 3 points each.
+
+================== # 1
+-1
+n
+Jollywood
+2
+================== # 2
+22
+Q
+Jollywood
+2
+================== # 3
+22
+n
+
+2
+================== # 4
+22
+n
+Jollywood
+-1
+================== # 5
+22
+N
+Jollywood
+2
+================== # 6
+22
+no
+Jollywood
+2
+================== # 7
+22
+no way
+Jollywood
+2
+================== # 8
+-1
+Q
+
+-1
+================== # 9
+0
+n
+Jollywood
+1
+================== # 10
+22
+n
+San Lousy Abysmal
+2
+================== # 11
+22
+n
+Jollywood
+2
+================== # 12
+22
+y
+Jollywood
+2
+================== # 13
+18
+n
+Jollywood
+1
+================== # 14
+18
+y
+Jollywood
+0
+================== # 15
+17
+n
+Jollywood
+2
+================== # 16
+17
+n
+Jollywood
+1
+================== # 17
+17
+y
+Jollywood
+1
+================== # 18
+17
+n
+Jollywood
+0
+================== # 19
+65
+n
+Jollywood
+0
+================== # 20
+66
+n
+Jollywood
+0
+================== # 21
+66
+y
+Jollywood
+0
+================== # 22
+66
+n
+Jollywood
+1
+================== # 23
+66
+y
+Jollywood
+1
+================== # 24
+66
+n
+Jollywood
+2
+================== # 25
+66
+y
+Jollywood
+2
+================== # 26
+40
+n
+Jollywood
+9
+================== # 27
+40
+n
+Jollywood
+3

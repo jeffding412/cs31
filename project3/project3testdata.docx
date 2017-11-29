@@ -1,0 +1,287 @@
+There were 115 test cases, each worth 0.6522 points. Each test case is represented by an assertion that must be true for you to pass that test. To run the test cases:
+
+Remove the main routine from your keyboard.cpp file.
+Append the following text to the end of your keyboard.cpp file, and build the resulting program.
+For any test case you wish to try, run the program, providing as input the test number.
+#include <iostream>
+#include <string>
+#include <cassert>
+using namespace std;
+
+bool hasCorrectSyntax(string song);
+int encodeSong(string song, string& instructions, int& badBeat);
+
+void xxxtestone(int n)
+{
+	string ins = "";
+	int bb = 0;
+	switch (n)
+	{
+			         default: {
+	    cout << "Bad argument" << endl;
+			} break; case  1: {
+	    assert(hasCorrectSyntax(""));
+			} break; case  2: {
+	    assert(!hasCorrectSyntax("C"));
+			} break; case  3: {
+	    assert(!hasCorrectSyntax("#"));
+			} break; case  4: {
+	    assert(!hasCorrectSyntax("3"));
+			} break; case  5: {
+	    assert(hasCorrectSyntax("/"));
+			} break; case  6: {
+	    assert(hasCorrectSyntax("A/"));
+			} break; case  7: {
+	    assert(hasCorrectSyntax("B/"));
+	    assert(hasCorrectSyntax("C/"));
+	    assert(hasCorrectSyntax("D/"));
+	    assert(hasCorrectSyntax("E/"));
+	    assert(hasCorrectSyntax("F/"));
+			} break; case  8: {
+	    assert(hasCorrectSyntax("G/"));
+			} break; case  9: {
+	    assert(!hasCorrectSyntax("H/"));
+			} break; case 10: {
+	    assert(!hasCorrectSyntax("e/"));
+			} break; case 11: {
+	    assert(!hasCorrectSyntax("#/"));
+			} break; case 12: {
+	    assert(!hasCorrectSyntax("5/"));
+			} break; case 13: {
+	    assert(!hasCorrectSyntax("#5/"));
+			} break; case 14: {
+	    assert(!hasCorrectSyntax("C#"));
+			} break; case 15: {
+	    assert(!hasCorrectSyntax("C5"));
+			} break; case 16: {
+	    assert(!hasCorrectSyntax("C#5"));
+			} break; case 17: {
+	    assert(!hasCorrectSyntax("C5#/"));
+			} break; case 18: {
+	    assert(hasCorrectSyntax("C#/"));
+			} break; case 19: {
+	    assert(hasCorrectSyntax("Db/"));
+			} break; case 20: {
+	    assert(hasCorrectSyntax("C3/"));
+			} break; case 21: {
+	    assert(hasCorrectSyntax("C#3/"));
+			} break; case 22: {
+	    assert(!hasCorrectSyntax("C34/"));
+			} break; case 23: {
+	    assert(!hasCorrectSyntax("C#34/"));
+			} break; case 24: {
+	    assert(!hasCorrectSyntax("C#b/"));
+			} break; case 25: {
+	    assert(hasCorrectSyntax("C0/"));
+	    assert(hasCorrectSyntax("D1/"));
+			} break; case 26: {
+	    assert(hasCorrectSyntax("B9/"));
+	    assert(hasCorrectSyntax("B#9/"));
+	    assert(hasCorrectSyntax("Cb0/"));
+			} break; case 27: {
+	    assert(hasCorrectSyntax("//"));
+			} break; case 28: {
+	    assert(hasCorrectSyntax("C//"));
+			} break; case 29: {
+	    assert(hasCorrectSyntax("/C/"));
+			} break; case 30: {
+	    assert(hasCorrectSyntax("C/C/"));
+			} break; case 31: {
+	    assert(hasCorrectSyntax("C#/C/"));
+			} break; case 32: {
+	    assert(hasCorrectSyntax("C/C3/"));
+			} break; case 33: {
+	    assert(hasCorrectSyntax("C#4/Eb5/"));
+			} break; case 34: {
+	    assert(!hasCorrectSyntax("C/E"));
+			} break; case 35: {
+	    assert(!hasCorrectSyntax("C#5/E5b/"));
+			} break; case 36: {
+	    assert(!hasCorrectSyntax("C#5/#/"));
+			} break; case 37: {
+	    assert(hasCorrectSyntax("////"));
+			} break; case 38: {
+	    assert(hasCorrectSyntax("//C/D/E/F///F/E//D/C/"));
+			} break; case 39: {
+	    assert(!hasCorrectSyntax("C/C/D/E/F/F/E/D/C/3/E/F/"));
+			} break; case 40: {
+	    assert(hasCorrectSyntax("CD/"));
+			} break; case 41: {
+	    assert(hasCorrectSyntax("C#D/"));
+			} break; case 42: {
+	    assert(hasCorrectSyntax("C#3D/"));
+			} break; case 43: {
+	    assert(hasCorrectSyntax("C3D/"));
+			} break; case 44: {
+	    assert(hasCorrectSyntax("CD#/"));
+			} break; case 45: {
+	    assert(hasCorrectSyntax("CD#3/"));
+			} break; case 46: {
+	    assert(hasCorrectSyntax("CD3/"));
+			} break; case 47: {
+	    assert(hasCorrectSyntax("C#D3/"));
+			} break; case 48: {
+	    assert(hasCorrectSyntax("C#4D#5/"));
+			} break; case 49: {
+	    assert(!hasCorrectSyntax("CD5#/"));
+			} break; case 50: {
+	    assert(!hasCorrectSyntax("C#D#H/"));
+			} break; case 51: {
+	    assert(!hasCorrectSyntax("C#4#/"));
+			} break; case 52: {
+	    assert(!hasCorrectSyntax("C#43D#5/"));
+			} break; case 53: {
+	    assert(hasCorrectSyntax("A3C#E//E//F#3A3D4/A3C#E/"));
+			} break; case 54: {
+	    assert(hasCorrectSyntax("C0C0DC0DD/E#FbB#Cb/B#9/"));
+			} break; case 55: {
+	    assert(hasCorrectSyntax("G3B3DD5//G/A/A3B/C5/B3D5//G//G//CE5//C5/D5/E5/F#5/B3G5//G//G/"));
+			} break; case 56: {
+	    assert(hasCorrectSyntax("DADDA/"));
+			} break; case 57: {
+	    assert(encodeSong("", ins, bb) == 0);
+			} break; case 58: {
+	    encodeSong("", ins, bb);
+	    assert(ins == "");
+			} break; case 59: {
+	    bb = 666;
+	    encodeSong("", ins, bb);
+	    assert(bb == 666);
+			} break; case 60: {
+	    assert(encodeSong("/", ins, bb) == 0);
+			} break; case 61: {
+	    assert(encodeSong("/", ins, bb) == 0);
+	    assert(ins == " ");
+			} break; case 62: {
+	    bb = 666;
+	    encodeSong("/", ins, bb);
+	    assert(bb == 666);
+			} break; case 63: {
+	    assert(encodeSong("G/", ins, bb) == 0);
+			} break; case 64: {
+	    ins = "@@@";
+	    encodeSong("G/", ins, bb);
+	    assert(ins == "L");
+			} break; case 65: {
+	    bb = 666;
+	    encodeSong("G/", ins, bb);
+	    assert(bb == 666);
+			} break; case 66: {
+	    assert(encodeSong("G#/", ins, bb) == 0  &&  ins == "$");
+			} break; case 67: {
+	    assert(encodeSong("Gb/", ins, bb) == 0  &&  ins == "#");
+			} break; case 68: {
+	    assert(encodeSong("G3/", ins, bb) == 0  &&  ins == "S");
+			} break; case 69: {
+	    assert(encodeSong("G#3/", ins, bb) == 0  &&  ins == "9");
+			} break; case 70: {
+	    assert(encodeSong("B#1/", ins, bb) == 0  &&  ins == "Z");
+			} break; case 71: {
+	    assert(encodeSong("C2/", ins, bb) == 0  &&  ins == "Z");
+			} break; case 72: {
+	    assert(encodeSong("B5/", ins, bb) == 0  &&  ins == "O");
+			} break; case 73: {
+	    assert(encodeSong("Cb6/", ins, bb) == 0  &&  ins == "O");
+			} break; case 74: {
+	    assert(encodeSong("B#5/", ins, bb) == 0  &&  ins == "P");
+			} break; case 75: {
+	    assert(encodeSong("C6/", ins, bb) == 0  &&  ins == "P");
+			} break; case 76: {
+	    assert(encodeSong("//", ins, bb) == 0  &&  ins == "  ");
+			} break; case 77: {
+	    assert(encodeSong("G//", ins, bb) == 0  &&  ins == "L ");
+			} break; case 78: {
+	    assert(encodeSong("/G/", ins, bb) == 0  &&  ins == " L");
+			} break; case 79: {
+	    assert(encodeSong("G/A/", ins, bb) == 0  &&  ins == "LQ");
+			} break; case 80: {
+	    assert(encodeSong("G#/G/", ins, bb) == 0  &&  ins == "$L");
+			} break; case 81: {
+	    assert(encodeSong("G/G3/", ins, bb) == 0  &&  ins == "LS");
+			} break; case 82: {
+	    assert(encodeSong("C#4/Db5/", ins, bb) == 0  &&  ins == "!^");
+			} break; case 83: {
+	    assert(encodeSong("////", ins, bb) == 0  &&  ins == "    ");
+			} break; case 84: {
+	    assert(encodeSong("G///A/B/C//D//", ins, bb) == 0  &&  ins == "L  QWG H ");
+			} break; case 85: {
+	    assert(encodeSong("C2/C#2/D2/D#2/Fb2/E#2/F#2/G2/G#2/A2/A#2/B2/", ins, bb) == 0  &&  ins == "Z1X2CV3B4N5M");
+			} break; case 86: {
+	    assert(encodeSong("B#2/Db3/D3/Eb3/E3/F3/Gb3/G3/Ab3/A3/Bb3/Cb4/", ins, bb) == 0  &&  ins == ",6.7/A8S9D0F");
+			} break; case 87: {
+	    assert(encodeSong("C4/C#/D/D#4/E/F4/Gb4/G4/Ab/A/Bb/B4/", ins, bb) == 0  &&  ins == "G!H@JK#L$Q%W");
+			} break; case 88: {
+	    assert(encodeSong("C5/C#5/D5/D#5/E5/F5/F#5/G5/G#5/A5/A#5/B5/", ins, bb) == 0  &&  ins == "E^R&TY*U(I)O");
+			} break; case 89: {
+	    assert(encodeSong("CE/", ins, bb) == 0  &&  ins == "[GJ]");
+			} break; case 90: {
+	    assert(encodeSong("CEb/", ins, bb) == 0  &&  ins == "[G@]");
+			} break; case 91: {
+	    assert(encodeSong("C#E/", ins, bb) == 0  &&  ins == "[!J]");
+			} break; case 92: {
+	    assert(encodeSong("C3F#5/", ins, bb) == 0  &&  ins == "[,*]");
+			} break; case 93: {
+	    assert(encodeSong("CDEFGAB/", ins, bb) == 0  &&  ins == "[GHJKLQW]");
+			} break; case 94: {
+	    assert(encodeSong("C#D3EbF#5Gb2AB/", ins, bb) == 0  &&  ins == "[!.@*3QW]");
+			} break; case 95: {
+	    assert(encodeSong("CD/E/FG/", ins, bb) == 0  &&  ins == "[GH]J[KL]");
+			} break; case 96: {
+	    assert(encodeSong("D3/F#3/A3/D4//D3F#3A3D4/", ins, bb) == 0  &&  ins == ".8DH [.8DH]");
+			} break; case 97: {
+	    assert(encodeSong("G3B3DD5//G/A/A3B/C5/B3D5//G//G//CE5//C5/D5/E5/F#5/B3G5//G//G/", ins, bb) == 0  &&  ins == "[SFHR] LQ[DW]E[FR] L L [GT] ERT*[FU] L L");
+			} break; case 98: {
+	    assert(encodeSong("DADDA/", ins, bb) == 0  &&  ins == "[HQHHQ]");
+			} break; case 99: {
+	    assert(encodeSong("C", ins, bb) == 1);
+			} break; case 100: {
+	    ins = "@@@";
+	    encodeSong("C", ins, bb);
+	    assert(ins == "@@@");
+			} break; case 101: {
+	    bb = 666;
+	    encodeSong("C", ins, bb);
+	    assert(bb == 666);
+			} break; case 102: {
+	    assert(encodeSong("C0/", ins, bb) == 2);
+			} break; case 103: {
+	    ins = "@@@";
+	    encodeSong("C0/", ins, bb);
+	    assert(ins == "@@@");
+			} break; case 104: {
+	    encodeSong("C0/", ins, bb);
+	    assert(bb == 1);
+			} break; case 105: {
+	    assert(encodeSong("C/D/C0/", ins, bb) == 2  &&  bb == 3);
+			} break; case 106: {
+	    assert(encodeSong("C/D/E/C0/F/G/", ins, bb) == 2  &&  bb == 4);
+			} break; case 107: {
+	    assert(encodeSong("C/D/C0/E/F/C0/", ins, bb) == 2  &&  bb == 3);
+			} break; case 108: {
+	    assert(encodeSong("C/D/D0/E/F/C0/G/", ins, bb) == 2  &&  bb == 3);
+			} break; case 109: {
+	    assert(encodeSong("C/D/EFC0/", ins, bb) == 2  &&  bb == 3);
+			} break; case 110: {
+	    assert(encodeSong("C/D/EFC0G/", ins, bb) == 2  &&  bb == 3);
+			} break; case 111: {
+	    assert(encodeSong("B1/", ins, bb) == 2);
+			} break; case 112: {
+	    assert(encodeSong("C#6/", ins, bb) == 2);
+			} break; case 113: {
+	    assert(encodeSong("C7/", ins, bb) == 2);
+			} break; case 114: {
+	    assert(encodeSong("C8/", ins, bb) == 2);
+			} break; case 115: {
+	    assert(encodeSong("C9/", ins, bb) == 2);
+			}
+	}
+}
+
+int main()
+{
+	cout << "Enter test number: ";
+	int n;
+	cin >> n;
+	testone(n);
+	cout << "Passed!" << endl;
+}

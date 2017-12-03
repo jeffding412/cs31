@@ -171,24 +171,23 @@ int Flatulan::col() const
 
 void Flatulan::move()
 {
-    // Attempt to move in a random direction; if we can't move, don't move.
-    // If the player is there, don't move.
-    int dir = randInt(0, NUMDIRS-1);  // dir is now UP, DOWN, LEFT, or RIGHT
+    int dir = randInt(0, NUMDIRS-1);
+    
     switch (dir) {
         case UP:
-            if ((m_city->player()->row() != row()-1) && (m_city->player()->col() != col()))
+            if (!(m_city->player()->row() == m_row-1 && m_city->player()->col() == m_col))
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         case DOWN:
-            if ((m_city->player()->row() != row()+1) && (m_city->player()->col() != col()))
+            if (!(m_city->player()->row() == m_row+1 && m_city->player()->col() == m_col))
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         case LEFT:
-            if ((m_city->player()->row() != row()) && (m_city->player()->col() != col()-1))
+            if (!(m_city->player()->row() == m_row && m_city->player()->col() == m_col-1))
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         case RIGHT:
-            if ((m_city->player()->row() != row()) && (m_city->player()->col() != col()+1))
+            if (!(m_city->player()->row() == m_row && m_city->player()->col() == m_col+1))
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         default:
@@ -268,19 +267,19 @@ void Player::move(int dir)
     m_age++;
     switch (dir) {
         case UP:
-            if (m_city->nFlatulansAt(m_row-1, m_col) == 0)
+            if (m_city->nFlatulansAt(row()-1, col()) == 0)
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         case DOWN:
-            if (m_city->nFlatulansAt(m_row+1, m_col) == 0)
+            if (m_city->nFlatulansAt(row()+1, col()) == 0)
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         case LEFT:
-            if (m_city->nFlatulansAt(m_row, m_col-1) == 0)
+            if (m_city->nFlatulansAt(row(), col()-1) == 0)
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         case RIGHT:
-            if (m_city->nFlatulansAt(m_row, m_col+1) == 0)
+            if (m_city->nFlatulansAt(row(), col()+1) == 0)
                 m_city->determineNewPosition(m_row, m_col, dir);
             break;
         default:
@@ -314,8 +313,9 @@ City::City(int nRows, int nCols)
 City::~City()
 {
     delete m_player;
-    for (int x = 0; x < flatulanCount(); x++)
+    for (int x = 0; x < m_nFlatulans; x++) {
         delete m_flatulans[x];
+    }
 }
 
 int City::rows() const
@@ -340,14 +340,15 @@ int City::flatulanCount() const
 
 int City::nFlatulansAt(int r, int c) const
 {
-    int numberOfFlatulans = 0;
+    int numOfFlatulans = 0;
     
-    for (int x = 0; x < flatulanCount(); x++)
-        if (m_flatulans[x]->row() == r && m_flatulans[x]->col() == c)
-            numberOfFlatulans++;
+    for (int x = 0; x < flatulanCount(); x++) {
+        if (m_flatulans[x]->row() == r && m_flatulans[x]->col() == c) {
+            numOfFlatulans++;
+        }
+    }
     
-    return numberOfFlatulans;
-    
+    return numOfFlatulans;
 }
 
 bool City::determineNewPosition(int& r, int& c, int dir) const
@@ -355,26 +356,33 @@ bool City::determineNewPosition(int& r, int& c, int dir) const
     switch (dir)
     {
         case UP:
-            // TODO:  Implement the behavior if dir is UP.
-            if (isInBounds(r-1, c))
+            if (isInBounds(r-1, c)) {
                 r--;
+                return true;
+            }
             break;
         case DOWN:
-            if (isInBounds(r+1, c))
+            if (isInBounds(r+1, c)) {
                 r++;
+                return true;
+            }
             break;
         case LEFT:
-            if (isInBounds(r, c-1))
+            if (isInBounds(r, c-1)) {
                 c--;
+                return true;
+            }
             break;
         case RIGHT:
-            if (isInBounds(r, c+1))
-                r++;
+            if (isInBounds(r, c+1)) {
+                c++;
+                return true;
+            }
             break;
         default:
             return false;
     }
-    return true;
+    return false;
 }
 
 void City::display() const
@@ -390,9 +398,12 @@ void City::display() const
             grid[r][c] = '.';
     
     // Indicate each Flatulan's position
-    for (r = 0; r < rows(); r++) {
-        for (c = 0; c < cols(); c++) {
-            switch (nFlatulansAt(r, c)) {
+    for(r = 0; r < rows(); r++)
+    {
+        for(c = 0; c < cols(); c++)
+        {
+            switch (nFlatulansAt(r+1,c+1))
+            {
                 case 0:
                     break;
                 case 1:
@@ -473,6 +484,8 @@ bool City::addFlatulan(int r, int c)
         return false;
     
     // If there are MAXFLATULANS unconverted Flatulans, return false.
+    if (m_nFlatulans == MAXFLATULANS)
+        return false;
     // Otherwise, dynamically allocate a new Flatulan at coordinates (r,c).
     // Save the pointer to the newly allocated Flatulan and return true.
     
@@ -480,12 +493,8 @@ bool City::addFlatulan(int r, int c)
     // in this scenario (which won't occur in this game):  MAXFLATULANS
     // are added, then some are converted, then more are added.
     
-    if (m_nFlatulans == MAXFLATULANS)
-        return false;
-    
     m_flatulans[m_nFlatulans] = new Flatulan(this, r, c);
     m_nFlatulans++;
-    
     return true;
 }
 
@@ -504,6 +513,7 @@ bool City::addPlayer(int r, int c)
     
     // Dynamically allocate a new Player and add it to the city
     m_player = new Player(this, r, c);
+    
     return true;
 }
 
@@ -514,70 +524,32 @@ void City::preachToFlatulansAroundPlayer()
     // since we have no further need to display it or have it interact with
     // the player.
     
-    // TODO:  Implement this.
     int row = player()->row();
     int col = player()->col();
-    int numConverted = 0;
-    for (int x = 0; x < m_nFlatulans; x++)
-    {
-        if (m_flatulans[x]->row() == row-1) {
-            if (m_flatulans[x]->col() == col-1) {
+    for (int x = 0; x < m_nFlatulans; x++) {
+        if ((m_flatulans[x]->row() == row-1) || (m_flatulans[x]->row() == row+1)) {
+            if ((m_flatulans[x]->col() == col-1) || (m_flatulans[x]->col() == col) || (m_flatulans[x]->col() == col+1)) {
                 if (m_flatulans[x]->possiblyGetConverted()) {
                     delete m_flatulans[x];
-                    numConverted++;
-                }
-            }
-            else if (m_flatulans[x]->col() == col) {
-                if (m_flatulans[x]->possiblyGetConverted()) {
-                    delete m_flatulans[x];
-                    numConverted++;
-                }
-            }
-            else if (m_flatulans[x]->col() == col+1) {
-                if (m_flatulans[x]->possiblyGetConverted()) {
-                    delete m_flatulans[x];
-                    numConverted++;
+                    for (int y = x; y < m_nFlatulans-1; y++)
+                        m_flatulans[y] = m_flatulans[y+1];
+                    m_nFlatulans--;
+                    x--;
                 }
             }
         }
-        else if (m_flatulans[x]->row() == row + 1)
-        {
-            if (m_flatulans[x]->col() == col-1) {
+        else if (m_flatulans[x]->row() == row) {
+            if ((m_flatulans[x]->col() == col-1) || (m_flatulans[x]->col() == col+1)) {
                 if (m_flatulans[x]->possiblyGetConverted()) {
                     delete m_flatulans[x];
-                    numConverted++;
-                }
-            }
-            else if (m_flatulans[x]->col() == col) {
-                if (m_flatulans[x]->possiblyGetConverted()) {
-                    delete m_flatulans[x];
-                    numConverted++;
-                }
-            }
-            else if (m_flatulans[x]->col() == col+1) {
-                if (m_flatulans[x]->possiblyGetConverted()) {
-                    delete m_flatulans[x];
-                    numConverted++;
-                }
-            }
-        }
-        else if (m_flatulans[x]->row() == row)
-        {
-            if (m_flatulans[x]->col() == col-1) {
-                if (m_flatulans[x]->possiblyGetConverted()) {
-                    delete m_flatulans[x];
-                    numConverted++;
-                }
-            }
-            else if (m_flatulans[x]->col() == col+1) {
-                if (m_flatulans[x]->possiblyGetConverted()) {
-                    delete m_flatulans[x];
-                    numConverted++;
+                    for (int y = x; y < m_nFlatulans-1; y++)
+                        m_flatulans[y] = m_flatulans[y+1];
+                    m_nFlatulans--;
+                    x--;
                 }
             }
         }
     }
-    m_nFlatulans -= numConverted;
 }
 
 void City::moveFlatulans()
@@ -589,16 +561,10 @@ void City::moveFlatulans()
         m_flatulans[k]->move();
         row = m_flatulans[k]->row();
         col = m_flatulans[k]->col();
-        if (player()->row() == row) {
-            if ((player()->col() == col-1) || (player()->col() == col+1)) {
-                player()->getGassed();
-            }
-        }
-        else if (player()->col() == col) {
-            if ((player()->row() == row-1) || (player()->row() == row+1)) {
-                player()->getGassed();
-            }
-        }
+        if (((player()->row() == row-1) || (player()->row() == row+1)) && (player()->col() == col))
+            player()->getGassed();
+        else if (((player()->col() == col-1) || (player()->col() == col+1)) && (player()->row() == row))
+            player()->getGassed();
     }
 }
 
@@ -732,6 +698,7 @@ int main()
     // Create a game
     // Use this instead to create a mini-game:   Game g(3, 4, 2);
     Game g(7, 8, 25);
+    //Game g(3, 4, 2);
     
     // Play the game
     g.play();

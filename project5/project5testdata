@@ -1,0 +1,302 @@
+We took your Project 5 source file, and made the following tranformations:
+
+Rename runOneRound to xxxrunOneRound in its implementation and prototype (but in main, keep the call as calling runOneRound)
+Insert the prototype int runOneRound(const char[][7], int, int); before int main().
+Change main to xxxmain. If the last statement in xxxmain is not return 0;, add that as the last statement.
+We then appended the following code to your file, built an executable from only that file (and not utilities.cpp) and ran the 34 test cases. Test cases 6 through 22 were worth 2 points each; the others are worth 3 points each. If you apply the same transformations above to the Project 5 solution, you can see what is the expected output that your output must match exactly.
+
+// This code uses C++ features beyond the scope of CS 31.
+
+#include <iostream>
+#include <streambuf>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <functional>
+#include <initializer_list>
+#include <random>
+#include <utility>
+#include <cstring>
+#include <cstdlib>
+
+using namespace std;
+
+class TooMuchOutput {};
+
+class limitoutputstringbuf : public stringbuf
+{
+  public:
+        limitoutputstringbuf(streamsize max)
+         : m_left(max)
+        {}
+        int_type overflow(int_type c = traits_type::eof())
+        {
+                if (m_left == 0)
+                        throw TooMuchOutput();
+                m_left--;
+                return stringbuf::overflow(c);
+        }
+  private:
+        streamsize m_left;
+};
+
+class streambuf_switcher
+{
+  public:
+    streambuf_switcher(ios& dest, ios& src)
+     : streambuf_switcher(dest, src.rdbuf())
+    {}
+    streambuf_switcher(ios& dest, streambuf* src)
+     : dest_stream(dest), saved_streambuf(dest.rdbuf(src))
+    {}
+    ~streambuf_switcher()
+    {
+        dest_stream.rdbuf(saved_streambuf);
+    }
+  private:
+    ios& dest_stream;
+    streambuf* saved_streambuf;
+};
+
+int randInt(int min, int max)
+{
+    if (max < min)
+        swap(max, min);
+    static random_device rd;
+    static mt19937 generator(rd());
+    uniform_int_distribution<> distro(min, max);
+    return distro(generator);
+}
+
+int xxxrunOneRound(const char [][7], int, int);
+
+using RORtype = function<int(const char[][7], int, int)>;
+RORtype fffrunOneRound = xxxrunOneRound;
+const initializer_list<const char*>* initWords;
+
+int getWords(char words[][7], int maxWords, const char [])
+{
+        if (maxWords < 1)
+                return maxWords;
+        int num = 0;
+        for (auto w : *initWords)
+        {
+                if (num == maxWords)
+                        break;
+                strcpy(words[num], w);
+                num++;
+        }
+        return num;
+}
+
+void testmain(const initializer_list<const char*>& words, const char* input, const RORtype& mor)
+{
+        initWords = &words;
+        istringstream iss(input);
+        streambuf_switcher ssi(cin, iss);
+        fffrunOneRound = mor;
+        xxxmain();
+}
+
+int runOneRound(const char words[][7], int num, int wordnum)
+{
+        return fffrunOneRound(words, num, wordnum);
+}
+
+void testrunOneRound(const initializer_list<const char*>& words,
+                const char* input, int wordnum, int& score, string& output,
+                bool testBadWordnum = false)
+{
+        initWords = &words;
+        istringstream iss(input);
+        streambuf_switcher ssi(cin, iss);
+        limitoutputstringbuf losb(1000);
+        streambuf_switcher sso(cout, &losb);
+        char wordList[9000][7];
+        int nWords = getWords(wordList, 10, "");
+        if (testBadWordnum)
+            nWords = wordnum;
+        score = xxxrunOneRound(wordList, nWords, wordnum);
+        output = losb.str();
+}
+
+void testone(int n)
+{
+        int score;
+        string output;
+
+        switch (n)
+        {
+                default: {
+            return;
+                } break; case 1: {      // 0 rounds
+            testmain({ "tiger", "heron" }, "0\n1\nheron\n",
+                        [](const char [][7], int, int)->int
+                        { throw 1; });
+                } break; case 2: {      // got it in 1 try
+            testmain({ "tiger", "heron" }, "1\n",
+                        [](const char [][7], int, int)->int
+                        { return 1; });
+                } break; case 3: {      // stats for one game
+            testmain({ "tiger", "heron" }, "1\n",
+                        [](const char [][7], int, int)->int
+                        { return 42; });
+                } break; case 4: {      // stats for several games
+            testmain({ "tiger", "heron" }, "4\n",
+                        [](const char [][7], int, int)->int
+                        {
+                                static const size_t NUM_SCORES = 4;
+                                static int scores[NUM_SCORES] = { 4, 6, 3, 8 };
+                                static int r = NUM_SCORES - 1;
+                                if (++r == NUM_SCORES)
+                                        r = 0;
+                                return scores[r];
+                        });
+                } break; case 5: {      // random numbers used
+            static int counts[10] = { 0 };
+            static int errors = 0;
+            {
+                limitoutputstringbuf losb(1000);
+                streambuf_switcher sso(cout, &losb);
+                testmain({ "tiger", "heron", "okapi", "ocelot", "myna",
+                              "hyrax", "bison", "squid", "kudu", "pika" },
+                            "1000\n", [](const char [][7], int, int wordnum)->int
+                        {
+                                if (wordnum >= 0  &&  wordnum < 10)
+                                        counts[wordnum]++;
+                                else
+                                        errors++;
+                                return 1;
+                        });
+            }
+            if (errors > 0)
+                cout << "ERRORS: " << errors << endl;
+            if (none_of(counts, counts+10,
+                        [](int k) { return k-100 < -33  ||  k-100 > 33; }))
+                cout << "CORRECT" << endl;
+            else
+            {
+                for (int k = 0; k < 10; k++)
+                        cout << counts[k] << " ";
+            }
+                } break; case 6: {      // bad arg to runOneRound
+            testrunOneRound({ "tiger", "heron", "heron" }, "heron\n", 2,
+                        score, output, true);
+            cout << (score == -1 && output.empty() ? "CORRECT" : "WRONG") << endl;
+                } break; case 7: {      // last word OK
+            testrunOneRound({ "tiger", "heron" }, "heron\n", 1,
+                        score, output);
+            cout << (score == 1 ? "CORRECT" : "WRONG") << endl;
+                } break; case 8: {      // guessed in one try
+            testrunOneRound({ "tiger", "heron", "myna" }, "heron\n", 1, score, output);
+            cout << (score == 1 ? "CORRECT" : "WRONG") << endl;
+                } break; case 9: {      // guessed in two tries
+            testrunOneRound({ "tiger", "heron", "myna" }, "tiger\nheron\n", 1, score, output);
+            cout << (score == 2 ? "CORRECT" : "WRONG") << endl;
+                } break; case 10: {     // errors don't count as guesses
+            testrunOneRound({ "tiger", "heron", "myna" }, "he@on\nokapi\nheron\n", 1, score, output);
+            cout << (score == 1 ? "CORRECT" : "WRONG") << endl;
+                } break; case 11: {     // invalid characters in probe word
+            testrunOneRound({ "tiger", "heron", "myna" }, "he@on\nheron\n", 1, score, output);
+            cout << output;
+                } break; case 12: {     // space character in probe word
+            testrunOneRound({ "tiger", "heron", "myna", "he", "ron" }, "he ron\nheron\n", 1, score, output);
+            cout << output;
+                } break; case 13: {     // too few characters in probe word
+            testrunOneRound({ "tiger", "heron", "myna" }, "yak\nheron\n", 1, score, output);
+            cout << output;
+                } break; case 14: {     // too many characters in probe word
+            testrunOneRound({ "tiger", "heron", "myna" }, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz\nheron\n", 1, score, output);
+            cout << output;
+                } break; case 15: {     // probe word not in list
+            testrunOneRound({ "tiger", "heron", "myna" }, "okapi\nheron\n", 1, score, output);
+            cout << output;
+                } break; case 16: {     // stars/planets: 0/0
+            testrunOneRound({ "hyrax", "bison", "myna" }, "hyrax\nbison\n", 1, score, output);
+            cout << output;
+                } break; case 17: {     // 1/0
+            testrunOneRound({ "tiger", "bison", "myna" }, "tiger\nbison\n", 1, score, output);
+            cout << output;
+                } break; case 18: {     // 4/0
+            testrunOneRound({ "mouse", "louse", "myna" }, "mouse\nlouse\n", 1, score, output);
+            cout << output;
+                } break; case 19: {     // 0/1
+            testrunOneRound({ "tiger", "mouse", "myna" }, "tiger\nmouse\n", 1, score, output);
+            cout << output;
+                } break; case 20: {     // 0/4
+            testrunOneRound({ "rhino", "minor", "myna" }, "rhino\nminor\n", 1, score, output);
+            cout << output;
+                } break; case 21: {     // 1/3
+            testrunOneRound({ "horse", "shrew", "myna" }, "horse\nshrew\n", 1, score, output);
+            cout << output;
+                } break; case 22: {     // 0/5 not a win for 5 letter
+            testrunOneRound({ "stare", "aster", "myna" }, "stare\naster\n", 1, score, output);
+            cout << output;
+                } break; case 23: {     // 1/2 more of a letter in secret word than probe
+            testrunOneRound({ "sheep", "geese", "myna" }, "sheep\ngeese\n", 1, score, output);
+            cout << output;
+                } break; case 24: {     // 1/2 more of a letter in probe than secret word
+            testrunOneRound({ "geese", "sheep", "myna" }, "geese\nsheep\n", 1, score, output);
+            cout << output;
+                } break; case 25: {     // 0/5 multiple letters
+            testrunOneRound({ "emerge", "redeem", "myna" }, "emerge\nredeem\n", 1, score, output);
+            cout << output;
+                } break; case 26: {     // 1/2 probe 4, secret 5
+            testrunOneRound({ "myna", "hyena", "pika" }, "myna\nhyena\n", 1, score, output);
+            cout << output;
+                } break; case 27: {     // 1/2 probe 5, secret 4
+            testrunOneRound({ "hyena", "myna", "pika" }, "hyena\nmyna\n", 1, score, output);
+            cout << output;
+                } break; case 28: {     // 1/3 probe 4, secret 6
+            testrunOneRound({ "bear", "badger", "myna" }, "bear\nbadger\n", 1, score, output);
+            cout << output;
+                } break; case 29: {     // 1/3 probe 6, secret 4
+            testrunOneRound({ "badger", "bear", "myna" }, "badger\nbear\n", 1, score, output);
+            cout << output;
+                } break; case 30: {     // 5/0 probe 5, secret 6
+            testrunOneRound({ "tiger", "tigers", "myna" }, "tiger\ntigers\n", 1, score, output);
+            cout << output;
+                } break; case 31: {     // 5/0 probe 6, secret 5
+            testrunOneRound({ "tigers", "tiger", "myna" }, "tigers\ntiger\n", 1, score, output);
+            cout << output;
+                } break; case 32: {     // 2/2 probe 6, secret 4, repeats
+            testrunOneRound({ "veer", "vervet", "myna" }, "veer\nvervet\n", 1, score, output);
+            cout << output;
+                } break; case 33: {     // 2/2 probe 4, secret 6, repeats
+            testrunOneRound({ "vervet", "veer", "myna" }, "vervet\nveer\n", 1, score, output);
+            cout << output;
+                } break; case 34: {     // checking doesn't corrupt word
+            int score2;
+            string output2;
+            testrunOneRound({ "llama", "halal", "myna" }, "llama\nllama\nhalal\n", 1, score, output);
+            testrunOneRound({ "llama", "halal", "myna" }, "halal\nhalal\nllama\n", 0, score2, output2);
+            cout << (score == 3 && score2 == 3 && output == output2 ? "CORRECT" : "WRONG");
+                } break;
+        }
+}
+
+int main()
+{
+        cout << "Enter test number (1-34): ";
+        int n;
+        cin >> n;
+        string s;
+        {
+                limitoutputstringbuf losb(1000);
+                streambuf_switcher sso(cout, &losb);
+
+                try
+                {
+                        testone(n);
+                        cout << "DONE" << endl;
+                }
+                catch(...)
+                {
+                }
+
+                s = losb.str();
+        }
+        cout << s;
+        if (!s.empty()  &&  s.back() != '\n')
+                cout << endl;
+}

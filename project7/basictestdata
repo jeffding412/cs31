@@ -1,0 +1,99 @@
+If you precede your main routine with the declaration void doBasicTests();, add the following as the first two lines of main:
+
+	doBasicTests(); // Remove this line after completing test.
+	return 0;       // Remove this line after completing test.
+append the following to your gas.cpp file, and build and run your project, you will test a number of basic aspects of your code.
+#include <cassert>
+
+#define CHECKTYPE(f, t) { (void)(t)(f); }
+
+void thisFunctionWillNeverBeCalled()
+{
+      // If the student deleted or changed the interfaces to the public
+      // functions, this won't compile.  (This uses magic beyond the scope
+      // of CS 31.)
+
+    Flatulan(static_cast<City*>(0), 1, 1);
+    CHECKTYPE(&Flatulan::row,                  int  (Flatulan::*)() const);
+    CHECKTYPE(&Flatulan::col,                  int  (Flatulan::*)() const);
+    CHECKTYPE(&Flatulan::move,                 void (Flatulan::*)());
+    CHECKTYPE(&Flatulan::possiblyGetConverted, bool (Flatulan::*)());
+
+    Player(static_cast<City*>(0), 1, 1);
+    CHECKTYPE(&Player::row,         int  (Player::*)() const);
+    CHECKTYPE(&Player::col,         int  (Player::*)() const);
+    CHECKTYPE(&Player::age,         int  (Player::*)() const);
+    CHECKTYPE(&Player::health,      int  (Player::*)() const);
+    CHECKTYPE(&Player::isPassedOut, bool (Player::*)() const);
+    CHECKTYPE(&Player::preach,      void (Player::*)());
+    CHECKTYPE(&Player::move,        void (Player::*)(int));
+    CHECKTYPE(&Player::getGassed,   void (Player::*)());
+
+    City(1, 1);
+    CHECKTYPE(&City::rows,                 int     (City::*)() const);
+    CHECKTYPE(&City::cols,                 int     (City::*)() const);
+    CHECKTYPE(&City::player,               Player* (City::*)() const);
+    CHECKTYPE(&City::flatulanCount,        int     (City::*)() const);
+    CHECKTYPE(&City::nFlatulansAt,         int     (City::*)(int,int) const);
+    CHECKTYPE(&City::determineNewPosition, bool    (City::*)(int&,int,int) const);
+    CHECKTYPE(&City::display,              void    (City::*)() const);
+    CHECKTYPE(&City::addFlatulan,          bool    (City::*)(int,int));
+    CHECKTYPE(&City::addPlayer,            bool    (City::*)(int,int));
+    CHECKTYPE(&City::preachToFlatulansAroundPlayer, void (City::*)());
+    CHECKTYPE(&City::moveFlatulans,        bool    (City::*)());
+
+    Game(1,1,1);
+    CHECKTYPE(&Game::play, void (Game::*)());
+}
+
+void doBasicTests()
+{
+    {
+        City walk(10, 20);
+        assert(walk.addPlayer(2, 6));
+        Player* pp = walk.player();
+        assert(pp->row() == 2  &&  pp->col() == 6  && ! pp->isPassedOut());
+        pp->move(UP);
+        assert(pp->row() == 1  &&  pp->col() == 6  && ! pp->isPassedOut());
+        pp->move(UP);
+        assert(pp->row() == 1  &&  pp->col() == 6  && ! pp->isPassedOut());
+	for (int k = 1; k <= 9; k++)
+		pp->getGassed();
+        assert(! pp->isPassedOut());
+        pp->getGassed();
+        assert(pp->isPassedOut());
+    }
+    {
+        City ofAngels(2, 2);
+        assert(ofAngels.addPlayer(1, 1));
+        assert(ofAngels.addFlatulan(2, 2));
+        Player* pp = ofAngels.player();
+        ofAngels.moveFlatulans();
+	assert( ! pp->isPassedOut());
+        for (int k = 0; k < 1000  && ! pp->isPassedOut(); k++)
+		ofAngels.moveFlatulans();
+	assert(pp->isPassedOut());
+    }
+    {
+        City ousDarth(2, 2);
+        assert(ousDarth.addPlayer(1, 1));
+	for (int k = 0; k < 50; k++)
+	{
+		assert(ousDarth.addFlatulan(1, 2));
+		assert(ousDarth.addFlatulan(2, 2));
+	}
+	ousDarth.preachToFlatulansAroundPlayer();
+	assert(ousDarth.nFlatulansAt(1, 1) == 0);
+	assert(ousDarth.nFlatulansAt(2, 1) == 0);
+	for (int r = 1; r <= 2; r++)
+	{	   // .9999 probability that between 5 and 29 out of 50 are
+		   // unconverted
+		int n = ousDarth.nFlatulansAt(r, 2);
+		assert(n >= 5  &&  n <= 29);
+	}
+	int m = ousDarth.nFlatulansAt(1, 2);
+	ousDarth.addFlatulan(1, 2);
+	assert(ousDarth.nFlatulansAt(1, 2) == m+1);
+    }
+    cout << "Passed all basic tests" << endl;
+}

@@ -10,9 +10,3 @@ These are my solutions to all UCLA CS31 HW/Projects from Fall of 2017. The READM
 | 5 | 100/100  |
 | 6 | 35/35  |
 | 7 | 100/100  |
-
-| Exam | Score |
-| ------- | ----- |
-| Midterm 1 | 35/35 |
-| Midterm 2 | 47/65 |
-| Final | 86/100 |
